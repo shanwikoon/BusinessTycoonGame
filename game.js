@@ -16,6 +16,23 @@ nextButton.onclick = () => moveToNextScenario();  // On click, move to next scen
 
 choicesDiv.appendChild(nextButton);
 
+function displayScenario() {
+  const scenario = scenarios[currentScenario];
+  scenarioText.innerHTML = scenario.text;
+
+  // Add this block to handle the image for each scenario
+  if (scenario.image) {
+    scenarioImage.src = scenario.image;
+    scenarioImage.style.display = 'block';
+  } else {
+    scenarioImage.style.display = 'none'; // Hide image if none provided
+  }
+
+  document.getElementById('choice1').innerHTML = scenario.choices[0].text;
+  document.getElementById('choice2').innerHTML = scenario.choices[1].text;
+}
+
+
 const scenarios = [
   {
     text: "You need to decide whether to invest in marketing or hire new staff. What do you do?",
