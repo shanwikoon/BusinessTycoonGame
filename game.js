@@ -66,7 +66,7 @@ const scenarios = [
   },
   {
     text: "An investor offers to buy a 20% share in your company for £50,000. Do you accept the offer?",
-    image: "images/investor_offer.jpg",  // Correct path to the image
+    image: "images/employee_raise.jpg",  // Correct path to the image
     choices: [
       { text: "Accept the offer", impact: { funds: 50000, morale: -5, satisfaction: 0 }, feedback: "You got the cash infusion, but your team is concerned about outside influence." },
       { text: "Reject the offer", impact: { funds: 0, morale: 5, satisfaction: 0 }, feedback: "Your team is happy you kept full control of the business." }
