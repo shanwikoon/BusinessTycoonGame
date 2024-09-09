@@ -14,7 +14,9 @@ body {
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 300px;
+  width: 80%; /* Changed width to 80% to make it wider */
+  max-width: 800px; /* Added a max width so it doesn’t become too wide */
+  margin: 20px auto; /* Added some margin for better spacing */
 }
 
 button {
