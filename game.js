@@ -16,22 +16,6 @@ nextButton.onclick = () => moveToNextScenario();  // On click, move to next scen
 
 choicesDiv.appendChild(nextButton);
 
-function displayScenario() {
-  const scenario = scenarios[currentScenario];
-  scenarioText.innerHTML = scenario.text;
-
-  // Add this block to handle the image for each scenario
-  if (scenario.image) {
-    scenarioImage.src = scenario.image;
-    scenarioImage.style.display = 'block';
-  } else {
-    scenarioImage.style.display = 'none'; // Hide image if none provided
-  }
-
-  document.getElementById('choice1').innerHTML = scenario.choices[0].text;
-  document.getElementById('choice2').innerHTML = scenario.choices[1].text;
-}
-
 
 const scenarios = [
   {
@@ -114,9 +98,19 @@ function updateDisplay(element, text, change) {
 function displayScenario() {
   const scenario = scenarios[currentScenario];
   scenarioText.innerHTML = scenario.text;
+
+  // Add the image handling code here
+  if (scenario.image) {
+    scenarioImage.src = scenario.image;  // Update the src of the image
+    scenarioImage.style.display = 'block';  // Display the image
+  } else {
+    scenarioImage.style.display = 'none';  // Hide the image if none is available
+  }
+
   document.getElementById('choice1').innerHTML = scenario.choices[0].text;
   document.getElementById('choice2').innerHTML = scenario.choices[1].text;
 }
+
 
 function makeChoice(choiceIndex) {
   const impact = scenarios[currentScenario].choices[choiceIndex - 1].impact;
