@@ -7,6 +7,14 @@ const fundsText = document.getElementById('funds');
 const moraleText = document.getElementById('morale');
 const satisfactionText = document.getElementById('satisfaction');
 const feedbackText = document.getElementById('feedback');
+const choicesDiv = document.getElementById('choices');
+const nextButton = document.createElement('button');  // Create a 'Next' button
+
+nextButton.innerHTML = 'Next';
+nextButton.style.display = 'none'; // Initially hide the 'Next' button
+nextButton.onclick = () => moveToNextScenario();  // On click, move to next scenario
+
+choicesDiv.appendChild(nextButton);
 
 const scenarios = [
   {
@@ -81,41 +89,4 @@ function updateStats(impact) {
 
 function updateDisplay(element, text, change) {
   element.innerHTML = text;
-  if (change > 0) {
-    element.classList.add('positive');
-    element.classList.remove('negative');
-  } else if (change < 0) {
-    element.classList.add('negative');
-    element.classList.remove('positive');
-  } else {
-    element.classList.remove('positive');
-    element.classList.remove('negative');
-  }
-}
-
-function displayScenario() {
-  const scenario = scenarios[currentScenario];
-  scenarioText.innerHTML = scenario.text;
-  document.getElementById('choice1').innerHTML = scenario.choices[0].text;
-  document.getElementById('choice2').innerHTML = scenario.choices[1].text;
-}
-
-function makeChoice(choiceIndex) {
-  const impact = scenarios[currentScenario].choices[choiceIndex - 1].impact;
-  const feedback = scenarios[currentScenario].choices[choiceIndex - 1].feedback;
-
-  updateStats(impact);
-  feedbackText.innerHTML = feedback;
-  feedbackText.style.color = impact.funds < 0 ? 'red' : 'green'; // Colour feedback based on the outcome
-
-  currentScenario++;
-  if (currentScenario < scenarios.length) {
-    displayScenario();
-  } else {
-    scenarioText.innerHTML = "Game Over! Thanks for playing.";
-    document.getElementById('choices').style.display = 'none';
-  }
-}
-
-displayScenario();
-updateStats({ funds: 0, morale: 0, satisfaction: 0 });  // Initial display without any changes
+  if (
