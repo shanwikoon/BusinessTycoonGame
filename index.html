@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Tycoon: Decision Maker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="game-container">
+    <h1>Business Tycoon</h1>
+    <p id="scenario-text">Welcome to your new business! Make wise decisions to grow your company.</p>
+
+    <div id="stats">
+      <p id="funds">Funds: $100,000</p>
+      <p id="morale">Employee Morale: 50%</p>
+      <p id="satisfaction">Customer Satisfaction: 50%</p>
+    </div>
+
+    <div id="choices">
+      <button id="choice1" onclick="makeChoice(1)">Option 1</button>
+      <button id="choice2" onclick="makeChoice(2)">Option 2</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
