@@ -89,4 +89,56 @@ function updateStats(impact) {
 
 function updateDisplay(element, text, change) {
   element.innerHTML = text;
-  if (
+  if (change > 0) {
+    element.classList.add('positive');
+    element.classList.remove('negative');
+  } else if (change < 0) {
+    element.classList.add('negative');
+    element.classList.remove('positive');
+  } else {
+    element.classList.remove('positive');
+    element.classList.remove('negative');
+  }
+}
+
+function displayScenario() {
+  const scenario = scenarios[currentScenario];
+  scenarioText.innerHTML = scenario.text;
+  document.getElementById('choice1').innerHTML = scenario.choices[0].text;
+  document.getElementById('choice2').innerHTML = scenario.choices[1].text;
+}
+
+function makeChoice(choiceIndex) {
+  const impact = scenarios[currentScenario].choices[choiceIndex - 1].impact;
+  const feedback = scenarios[currentScenario].choices[choiceIndex - 1].feedback;
+
+  updateStats(impact);
+  feedbackText.innerHTML = feedback;
+  feedbackText.style.color = impact.funds < 0 ? 'red' : 'green'; // Colour feedback based on the outcome
+
+  // Hide choices and show the 'Next' button
+  document.getElementById('choice1').style.display = 'none';
+  document.getElementById('choice2').style.display = 'none';
+  nextButton.style.display = 'inline-block';  // Show the 'Next' button
+}
+
+function moveToNextScenario() {
+  currentScenario++;
+  if (currentScenario < scenarios.length) {
+    nextButton.style.display = 'none';  // Hide 'Next' button
+    displayScenario();
+    
+    // Show choices again
+    document.getElementById('choice1').style.display = 'inline-block';
+    document.getElementById('choice2').style.display = 'inline-block';
+    
+    feedbackText.innerHTML = "";  // Clear the feedback
+  } else {
+    scenarioText.innerHTML = "Game Over! Thanks for playing.";
+    nextButton.style.display = 'none';  // Hide 'Next' button
+    document.getElementById('choices').style.display = 'none';  // Hide choices
+  }
+}
+
+displayScenario();
+updateStats({ funds: 0, morale: 0, satisfaction: 0 });  // Initial display without any changes
