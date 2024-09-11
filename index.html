@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Tycoon Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #game-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #intro {
+            text-align: justify;
+            line-height: 1.8;
+            padding: 0 20px;
+        }
+        #intro strong {
+            color: #4CAF50;
+        }
+        #metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        #metrics-table th, #metrics-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        #metrics-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #question {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            text-align: center;
+        }
+        #choices {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        button {
+            flex: 1;
+            padding: 15px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #feedback {
+            margin-top: 30px;
+            font-style: italic;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div class="section">
+            <h1>Business Tycoon Game</h1>
+        </div>
+        <div id="intro" class="section">
+            <p>In this game, you take the role of a business owner. You will face various business scenarios, and you must make decisions. Each decision will impact the company's <strong>profit</strong>, <strong>customer satisfaction</strong>, and <strong>employee morale</strong>. Your goal is to maintain a balance between these metrics.</p>
+        </div>
+        <div id="game-area" class="section">
+            <table id="metrics-table">
+                <tr>
+                    <th>Funds</th>
+                    <th>Employee Morale</th>
+                    <th>Customer Satisfaction</th>
+                    <th>Score</th>
+                </tr>
+                <tr>
+                    <td id="funds">£100,000</td>
+                    <td id="morale">50</td>
+                    <td id="satisfaction">50</td>
+                    <td id="score">0</td>
+                </tr>
+            </table>
+            <div id="question"></div>
+            <div id="choices"></div>
+            <div id="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            funds: 100000,
+            morale: 50,
+            satisfaction: 50,
+            score: 0
+        };
+
+        // Questions array
+        const questions = [
+            {
+                question: "Invest in Marketing or Hire New Staff?",
+                choices: [
+                    { text: "Invest in marketing (£20,000)", action: () => makeDecision(-20000, -5, 10, 5) },
+                    { text: "Hire new staff (£30,000)", action: () => makeDecision(-30000, 10, -5, 5) }
+                ]
+            },
+            {
+                question: "Handle a Customer Complaint",
+                choices: [
+                    { text: "Offer a refund (£10,000)", action: () => makeDecision(-10000, 0, 5, 3) },
+                    { text: "Improve quality control (£15,000)", action: () => makeDecision(-15000, 0, 10, 7) }
+                ]
+            },
+            {
+                question: "Deal with a Risky Supplier",
+                choices: [
+                    { text: "Take the risk (save £20,000)", action: () => makeDecision(20000, -5, -10, 2) },
+                    { text: "Stick with the current supplier (spend £5,000)", action: () => makeDecision(-5000, 5, 5, 5) }
+                ]
+            },
+            {
+                question: "Allow Remote Work or Stick to Office Work?",
+                choices: [
+                    { text: "Allow remote work (£0)", action: () => makeDecision(0, 15, 5, 8) },
+                    { text: "Stick to office work (£0)", action: () => makeDecision(0, -10, 0, 2) }
+                ]
+            },
+            {
+                question: "Competitor Launches a New Product",
+                choices: [
+                    { text: "Launch a marketing campaign (£25,000)", action: () => makeDecision(-25000, 0, 15, 7) },
+                    { text: "Wait it out (£0)", action: () => makeDecision(0, 0, -5, 1) }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function makeDecision(fundChange, moraleChange, satisfactionChange, scoreChange) {
+            gameState.funds += fundChange;
+            gameState.morale += moraleChange;
+            gameState.satisfaction += satisfactionChange;
+            gameState.score += scoreChange;
+            
+            gameState.morale = Math.max(0, Math.min(100, gameState.morale));
+            gameState.satisfaction = Math.max(0, Math.min(100, gameState.satisfaction));
+            
+            updateDisplay();
+            provideFeedback(fundChange, moraleChange, satisfactionChange);
+            
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion(currentQuestionIndex);
+            } else {
+                endGame();
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('funds').textContent = `£${gameState.funds}`;
+            document.getElementById('morale').textContent = gameState.morale;
+            document.getElementById('satisfaction').textContent = gameState.satisfaction;
+            document.getElementById('score').textContent = gameState.score;
+        }
+
+        function provideFeedback(fundChange, moraleChange, satisfactionChange) {
+            let feedback = "Decision Outcome:\n";
+            if (fundChange !== 0) feedback += `Funds ${fundChange > 0 ? 'increased' : 'decreased'} by £${Math.abs(fundChange)}\n`;
+            if (moraleChange !== 0) feedback += `Employee Morale ${moraleChange > 0 ? 'increased' : 'decreased'} by ${Math.abs(moraleChange)}\n`;
+            if (satisfactionChange !== 0) feedback += `Customer Satisfaction ${satisfactionChange > 0 ? 'increased' : 'decreased'} by ${Math.abs(satisfactionChange)}`;
+            
+            document.getElementById('feedback').textContent = feedback;
+        }
+
+        function displayQuestion(questionIndex) {
+            const question = questions[questionIndex];
+            document.getElementById('question').textContent = question.question;
+            
+            const choicesContainer = document.getElementById('choices');
+            choicesContainer.innerHTML = '';
+            question.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.textContent = choice.text;
+                button.onclick = choice.action;
+                choicesContainer.appendChild(button);
+            });
+        }
+
+        function endGame() {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = `
+                <div class="section">
+                    <h1>Business Tycoon Game</h1>
+                </div>
+                <div id="intro" class="section">
+                    <p>In this game, you take the role of a business owner. You will face various business scenarios, and you must make decisions. Each decision will impact the company's <strong>profit</strong>, <strong>customer satisfaction</strong>, and <strong>employee morale</strong>. Your goal is to maintain a balance between these metrics.</p>
+                </div>
+                <div class="section">
+                    <h2>Game Over!</h2>
+                    <table id="metrics-table">
+                        <tr>
+                            <th>Final Funds</th>
+                            <th>Final Employee Morale</th>
+                            <th>Final Customer Satisfaction</th>
+                            <th>Final Score</th>
+                        </tr>
+                        <tr>
+                            <td>£${gameState.funds}</td>
+                            <td>${gameState.morale}</td>
+                            <td>${gameState.satisfaction}</td>
+                            <td>${gameState.score}</td>
+                        </tr>
+                    </table>
+                    <p>${getFinalFeedback()}</p>
+                </div>
+            `;
+        }
+
+        function getFinalFeedback() {
+            if (gameState.score >= 25) {
+                return "Congratulations! You successfully managed your business, balancing customer satisfaction, employee morale, and funds effectively. Keep up the great leadership!";
+            } else if (gameState.score >= 15) {
+                return "Good job! You made some strong decisions, but there's still room to improve your management of funds, customer satisfaction, or morale. Review your strategies for better results next time.";
+            } else {
+                return "Your business faced challenges. You struggled to balance funds, morale, and satisfaction, leading to tough consequences. Consider focusing more on balancing decisions for better outcomes.";
+            }
+        }
+
+        function startGame() {
+            displayQuestion(currentQuestionIndex);
+        }
+
+        // Start the game when the page loads
+        window.onload = startGame;
+    </script>
+</body>
+</html>
